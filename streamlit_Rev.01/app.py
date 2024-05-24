@@ -1,3 +1,6 @@
+# 안 돌아감
+# 데이터가 잘못 되었다고 함
+
 import streamlit as st
 import pandas as pd
 import numpy as np
