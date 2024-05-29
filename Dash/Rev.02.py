@@ -1,4 +1,5 @@
 # 첫 배포 성공
+# DP26_Assay, DP26_Triester 2개만 적용함
 
 import plotly.express as px
 import dataiku
