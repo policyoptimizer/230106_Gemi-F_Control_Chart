@@ -1,3 +1,5 @@
+# 좀 더 상세하게 Rule 1,2,3,4 구성됨
+
 import dataiku
 from dash import Dash, dcc, html
 import plotly.express as px
