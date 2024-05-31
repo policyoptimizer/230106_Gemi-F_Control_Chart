@@ -1,4 +1,4 @@
-# 아래에 테이블 추가
+# 아래에 요약 테이블 추가
 
 import dataiku
 from dash import Dash, dcc, html, Input, Output
