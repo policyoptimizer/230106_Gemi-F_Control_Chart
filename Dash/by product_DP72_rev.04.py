@@ -65,15 +65,15 @@ def load_data_and_create_graphs(dataset_name, window_size):
    max_value = df[column_name].max()
    mean_value = df[column_name].mean()
    recent_trend = df[column_name].tail(5).mean()
-   trend_text = "Increasing" if recent_trend > mean_value else "Decreasing" if recent_trend < mean_value else "Stable"
+   trend_text = "상승" if recent_trend > mean_value else "하락" if recent_trend < mean_value else "안정"
    
    summary_table = html.Table([
        html.Thead(html.Tr([html.Th("Metric"), html.Th("Value")])),
        html.Tbody([
-           html.Tr([html.Td("Minimum"), html.Td(f"{min_value:.2f}")]),
-           html.Tr([html.Td("Maximum"), html.Td(f"{max_value:.2f}")]),
-           html.Tr([html.Td("Mean"), html.Td(f"{mean_value:.2f}")]),
-           html.Tr([html.Td("Recent Trend (last 5 batches)"), html.Td(trend_text)])
+           html.Tr([html.Td("최소"), html.Td(f"{min_value:.2f}")]),
+           html.Tr([html.Td("최대"), html.Td(f"{max_value:.2f}")]),
+           html.Tr([html.Td("평균"), html.Td(f"{mean_value:.2f}")]),
+           html.Tr([html.Td("최근 5배치 경향 : "), html.Td(trend_text)])
        ])
    ])
    
