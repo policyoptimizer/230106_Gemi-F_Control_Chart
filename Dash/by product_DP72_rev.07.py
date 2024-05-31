@@ -95,32 +95,6 @@ def create_dp72_tabs(window_size, sigma_level):
            html.Div([
                html.H3('요약 보고서'),
                summary_table,
-               html.Div([
-                   html.Label('윈도우 사이즈', style={'margin-right': '10px'}),
-                   dcc.Dropdown(
-                       id='window-size-dropdown',
-                       options=[
-                           {'label': '5', 'value': 5},
-                           {'label': '10', 'value': 10},
-                           {'label': '15', 'value': 15}
-                       ],
-                       value=window_size,
-                       clearable=False,
-                       style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
-                   ),
-                   html.Label('시그마 레벨', style={'margin-right': '10px'}),
-                   dcc.Dropdown(
-                       id='sigma-level-dropdown',
-                       options=[
-                           {'label': '1시그마', 'value': 1},
-                           {'label': '2시그마', 'value': 2},
-                           {'label': '3시그마', 'value': 3}
-                       ],
-                       value=sigma_level,
-                       clearable=False,
-                       style={'width': '30%', 'display': 'inline-block'}
-                   )
-               ], style={'text-align': 'center', 'margin-bottom': '20px'}),
                dcc.Graph(figure=trend_fig),
                dcc.Graph(figure=anomaly_fig)
            ])
@@ -131,6 +105,32 @@ def create_dp72_tabs(window_size, sigma_level):
 # 앱 레이아웃 설정
 app.layout = html.Div([
    html.H1('DP72 Analysis Dashboard'),
+   html.Div([
+       html.Label('윈도우 사이즈', style={'margin-right': '10px'}),
+       dcc.Dropdown(
+           id='window-size-dropdown',
+           options=[
+               {'label': '5', 'value': 5},
+               {'label': '10', 'value': 10},
+               {'label': '15', 'value': 15}
+           ],
+           value=5,
+           clearable=False,
+           style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
+       ),
+       html.Label('시그마 레벨', style={'margin-right': '10px'}),
+       dcc.Dropdown(
+           id='sigma-level-dropdown',
+           options=[
+               {'label': '1시그마', 'value': 1},
+               {'label': '2시그마', 'value': 2},
+               {'label': '3시그마', 'value': 3}
+           ],
+           value=1,
+           clearable=False,
+           style={'width': '30%', 'display': 'inline-block'}
+       )
+   ], style={'text-align': 'center', 'margin-bottom': '20px'}),
    dcc.Tabs(id="dp72-tabs", children=create_dp72_tabs(5, 1)),
    html.Div([
        html.H3('넬슨 법칙 설명'),
