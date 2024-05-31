@@ -5,26 +5,26 @@ from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
 import pandas as pd
 import numpy as np
-​
+
 # Dash 앱 인스턴스 생성
-app = Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
-​
+# app = Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+
 # 넬슨 법칙 탐지 함수들
 def check_rule_1(series, mean, std):
    return (series > mean + 3 * std) | (series < mean - 3 * std)
-​
+
 def check_rule_2(series, mean):
    return (series > mean).rolling(window=9).sum().ge(9) | \
           (series < mean).rolling(window=9).sum().ge(9)
-​
+
 def check_rule_3(series):
    return series.diff().gt(0).rolling(window=6).sum().ge(6) | \
           series.diff().lt(0).rolling(window=6).sum().ge(6)
-​
+
 def check_rule_4(series, mean, std):
    two_std = (series > mean + 2 * std) | (series < mean - 2 * std)
    return two_std.rolling(window=14).apply(lambda x: np.sum(x) >= 2, raw=True).fillna(0).astype(bool)
-​
+
 # 데이터셋 로드 및 그래프 생성 함수
 def load_data_and_create_graphs(dataset_name, window_size):
    dataset = dataiku.Dataset(dataset_name)
@@ -78,7 +78,7 @@ def load_data_and_create_graphs(dataset_name, window_size):
    ])
    
    return trend_fig, anomaly_fig, summary_table
-​
+
 # DP72 제품에 대한 탭 생성 함수
 def create_dp72_tabs(window_size):
    dp72_tabs = []
@@ -93,7 +93,7 @@ def create_dp72_tabs(window_size):
        ])
        dp72_tabs.append(tab)
    return dp72_tabs
-​
+
 # 앱 레이아웃 설정
 app.layout = html.Div([
    html.H1('DP72 Analysis Dashboard'),
@@ -110,15 +110,14 @@ app.layout = html.Div([
    ),
    dcc.Tabs(id="dp72-tabs", children=create_dp72_tabs(5))
 ])
-​
+
 @app.callback(
    Output('dp72-tabs', 'children'),
    Input('window-size-dropdown', 'value')
 )
 def update_tabs(window_size):
    return create_dp72_tabs(window_size)
-​
+
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #    app.run_server(debug=True)
-​​
