@@ -74,7 +74,7 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level, recent_b
        html.Thead(html.Tr([html.Th("항목"), html.Th("결과")], style={'text-align': 'center'})),
        html.Tbody([
            html.Tr([html.Td("경향성 판단", style={'text-align': 'center'}), html.Td(trend_text, style={'text-align': 'center'})]),
-           html.Tr([html.Td("최근 n 배치 (조정가능) 평균", style={'text-align': 'center'}), html.Td(f"{recent_avg:.2f}", style={'text-align': 'center'})]),
+           html.Tr([html.Td("최근 n 배치 평균", style={'text-align': 'center'}), html.Td(f"{recent_avg:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 평균", style={'text-align': 'center'}), html.Td(f"{mean_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 표준편차", style={'text-align': 'center'}), html.Td(f"{std_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 최대", style={'text-align': 'center'}), html.Td(f"{max_value:.2f}", style={'text-align': 'center'})]),
@@ -96,7 +96,7 @@ def create_dp72_tab(dataset, window_size, sigma_level, recent_batches, trend_thr
            html.Br(),  # 구분선 추가
            html.Br(),  # 구분선 추가
            html.Div([
-               html.Label('최근 배치 수', style={'margin-right': '10px'}),
+               html.Label('최근 배치 수 n', style={'margin-right': '10px'}),
                dcc.Dropdown(
                    id=f'recent-batches-dropdown-{dataset}',
                    options=[
