@@ -1,5 +1,5 @@
-# 좀 더 이쁘게 보고서 다듬음
-# 수정 중
+# 각 탭의 입력을 독립적으로 처리
+# 그에 따라 업데이트 되도록 콜백 함수 수정
 
 import dataiku
 from dash import Dash, dcc, html, Input, Output
@@ -30,7 +30,7 @@ def check_rule_4(series, mean, std):
 def load_data_and_create_graphs(dataset_name, window_size, sigma_level):
    dataset = dataiku.Dataset(dataset_name)
    df = dataset.get_dataframe()
-   
+
    # 데이터 분석 및 그래프 생성
    batch_column = df.columns[2]  # 2 번째 컬럼 배치 번호
    column_name = df.columns[-1]  # 마지막 컬럼 측정치
@@ -41,17 +41,17 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level):
    lower_bound = mean - sigma_level * std
    df['Upper_Bound'] = upper_bound
    df['Lower_Bound'] = lower_bound
-   
+
    # 넬슨 법칙 적용
    df['Anomaly_Rule1'] = check_rule_1(df[column_name], mean, std)
    df['Anomaly_Rule2'] = check_rule_2(df[column_name], mean)
    df['Anomaly_Rule3'] = check_rule_3(df[column_name])
    df['Anomaly_Rule4'] = check_rule_4(df[column_name], mean, std)
-   
+
    # 추세선 그래프
    trend_fig = px.line(df, x=batch_column, y=[column_name, 'MA', 'Upper_Bound', 'Lower_Bound'],
                        title=f"{dataset_name} - Trend and Moving Average")
-   
+
    # 이상치 탐지 그래프
    anomaly_fig = px.scatter(df, x=batch_column, y=column_name, title=f"{dataset_name} - Anomaly Detection")
    anomaly_fig.add_scatter(x=df[batch_column][df['Anomaly_Rule1']], y=df[column_name][df['Anomaly_Rule1']],
@@ -62,7 +62,7 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level):
                            mode='markers', name='Rule 3 Violation', marker=dict(color='green'))
    anomaly_fig.add_scatter(x=df[batch_column][df['Anomaly_Rule4']], y=df[column_name][df['Anomaly_Rule4']],
                            mode='markers', name='Rule 4 Violation', marker=dict(color='orange'))
-   
+
    # 요약 통계 계산
    min_value = df[column_name].min()
    max_value = df[column_name].max()
@@ -70,12 +70,12 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level):
    std_value = df[column_name].std()
    recent_avg = df[column_name].tail(5).mean()
    trend_text = "안정" if abs(recent_avg - mean_value) / mean_value < 0.02 else ("상승" if recent_avg > mean_value else "하락")
-   
+
    summary_table = html.Table([
        html.Thead(html.Tr([html.Th("항목"), html.Th("결과")], style={'text-align': 'center'})),
        html.Tbody([
            html.Tr([html.Td("최대", style={'text-align': 'center'}), html.Td(f"{max_value:.2f}", style={'text-align': 'center'})]),
-           html.Tr([html.Td("최소", style={'text-align': 'center'}), html.Td(f"{min_value:.2f}", style={'text-align': 'center'})]),          
+           html.Tr([html.Td("최소", style={'text-align': 'center'}), html.Td(f"{min_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("평균", style={'text-align': 'center'}), html.Td(f"{mean_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("표준편차", style={'text-align': 'center'}), html.Td(f"{std_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("상한", style={'text-align': 'center'}), html.Td(f"{upper_bound:.2f}", style={'text-align': 'center'})]),
@@ -84,54 +84,56 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level):
            html.Tr([html.Td("경향", style={'text-align': 'center'}), html.Td(trend_text, style={'text-align': 'center'})])
        ], style={'border': '1px solid black'})
    ], style={'width': '50%', 'margin': 'auto', 'border-collapse': 'collapse', 'border': '1px solid black'})
-   
+
    return trend_fig, anomaly_fig, summary_table
 
 # DP72 제품에 대한 탭 생성 함수
+def create_dp72_tab(dataset, window_size, sigma_level):
+   trend_fig, anomaly_fig, summary_table = load_data_and_create_graphs(dataset, window_size, sigma_level)
+   return dcc.Tab(label=dataset, children=[
+       html.Div([
+           html.H3('요약 보고서'),
+           summary_table,
+           html.Div([
+               html.Label('시그마 레벨', style={'margin-right': '10px'}),
+               dcc.Dropdown(
+                   id=f'sigma-level-dropdown-{dataset}',
+                   options=[
+                       {'label': '1시그마', 'value': 1},
+                       {'label': '2시그마', 'value': 2},
+                       {'label': '3시그마', 'value': 3}
+                   ],
+                   value=sigma_level,
+                   clearable=False,
+                   style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
+               ),
+               html.Label('윈도우 사이즈', style={'margin-right': '10px'}),
+               dcc.Dropdown(
+                   id=f'window-size-dropdown-{dataset}',
+                   options=[
+                       {'label': '5', 'value': 5},
+                       {'label': '10', 'value': 10},
+                       {'label': '15', 'value': 15}
+                   ],
+                   value=window_size,
+                   clearable=False,
+                   style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
+               )
+           ], style={'text-align': 'center', 'margin-bottom': '20px'}),
+           dcc.Graph(figure=trend_fig),
+           dcc.Graph(figure=anomaly_fig)
+       ])
+   ])
+
 def create_dp72_tabs(window_size, sigma_level):
    dp72_tabs = []
    for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]:
-       trend_fig, anomaly_fig, summary_table = load_data_and_create_graphs(dataset, window_size, sigma_level)
-       tab = dcc.Tab(label=dataset, children=[
-           html.Div([
-               html.H3('요약 보고서'),
-               summary_table,
-               dcc.Graph(figure=trend_fig),
-               dcc.Graph(figure=anomaly_fig)
-           ])
-       ])
-       dp72_tabs.append(tab)
+       dp72_tabs.append(create_dp72_tab(dataset, window_size, sigma_level))
    return dp72_tabs
 
 # 앱 레이아웃 설정
 app.layout = html.Div([
    html.H1('DP72 Analysis Dashboard'),
-   html.Div([
-       html.Label('윈도우 사이즈', style={'margin-right': '10px'}),
-       dcc.Dropdown(
-           id='window-size-dropdown',
-           options=[
-               {'label': '5', 'value': 5},
-               {'label': '10', 'value': 10},
-               {'label': '15', 'value': 15}
-           ],
-           value=5,
-           clearable=False,
-           style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
-       ),
-       html.Label('시그마 레벨', style={'margin-right': '10px'}),
-       dcc.Dropdown(
-           id='sigma-level-dropdown',
-           options=[
-               {'label': '1시그마', 'value': 1},
-               {'label': '2시그마', 'value': 2},
-               {'label': '3시그마', 'value': 3}
-           ],
-           value=1,
-           clearable=False,
-           style={'width': '30%', 'display': 'inline-block'}
-       )
-   ], style={'text-align': 'center', 'margin-bottom': '20px'}),
    dcc.Tabs(id="dp72-tabs", children=create_dp72_tabs(5, 1)),
    html.Div([
        html.H3('넬슨 법칙 설명'),
@@ -144,11 +146,16 @@ app.layout = html.Div([
 
 @app.callback(
    Output('dp72-tabs', 'children'),
-   Input('window-size-dropdown', 'value'),
-   Input('sigma-level-dropdown', 'value')
+   [Input(f'window-size-dropdown-{dataset}', 'value') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]] +
+   [Input(f'sigma-level-dropdown-{dataset}', 'value') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]]
 )
-def update_tabs(window_size, sigma_level):
-   return create_dp72_tabs(window_size, sigma_level)
+def update_tabs(*args):
+   window_sizes = args[:6]
+   sigma_levels = args[6:]
+   dp72_tabs = []
+   for dataset, window_size, sigma_level in zip(["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"], window_sizes, sigma_levels):
+       dp72_tabs.append(create_dp72_tab(dataset, window_size, sigma_level))
+   return dp72_tabs
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
