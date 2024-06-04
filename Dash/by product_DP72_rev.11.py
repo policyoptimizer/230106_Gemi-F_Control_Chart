@@ -1,4 +1,4 @@
-# 그래프 업데이트 안됨
+# 현재까지 Best
 
 import dataiku
 from dash import Dash, dcc, html, Input, Output
@@ -73,14 +73,14 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level, recent_b
    summary_table = html.Table([
        html.Thead(html.Tr([html.Th("항목"), html.Th("결과")], style={'text-align': 'center'})),
        html.Tbody([
-           html.Tr([html.Td("경향", style={'text-align': 'center'}), html.Td(trend_text, style={'text-align': 'center'})]),
-           html.Tr([html.Td("최근 배치 평균", style={'text-align': 'center'}), html.Td(f"{recent_avg:.2f}", style={'text-align': 'center'})]),
+           html.Tr([html.Td("경향성 판단", style={'text-align': 'center'}), html.Td(trend_text, style={'text-align': 'center'})]),
+           html.Tr([html.Td("최근 n 배치 (조정가능) 평균", style={'text-align': 'center'}), html.Td(f"{recent_avg:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 평균", style={'text-align': 'center'}), html.Td(f"{mean_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 표준편차", style={'text-align': 'center'}), html.Td(f"{std_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 최대", style={'text-align': 'center'}), html.Td(f"{max_value:.2f}", style={'text-align': 'center'})]),
            html.Tr([html.Td("Historical 최소", style={'text-align': 'center'}), html.Td(f"{min_value:.2f}", style={'text-align': 'center'})]),
-           html.Tr([html.Td("UCL (아래 버튼으로 조정가능)", style={'text-align': 'center'}), html.Td(f"{upper_bound:.2f}", style={'text-align': 'center'})]),
-           html.Tr([html.Td("LCL (아래 버튼으로 조정가능)", style={'text-align': 'center'}), html.Td(f"{lower_bound:.2f}", style={'text-align': 'center'})])
+           html.Tr([html.Td("UCL (조정가능)", style={'text-align': 'center'}), html.Td(f"{upper_bound:.2f}", style={'text-align': 'center'})]),
+           html.Tr([html.Td("LCL (조정가능)", style={'text-align': 'center'}), html.Td(f"{lower_bound:.2f}", style={'text-align': 'center'})])
        ], style={'border': '1px solid black'})
    ], style={'width': '50%', 'margin': 'auto', 'border-collapse': 'collapse', 'border': '1px solid black'})
 
@@ -146,8 +146,8 @@ def create_dp72_tab(dataset, window_size, sigma_level, recent_batches, trend_thr
                    style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
                )
            ], style={'text-align': 'center', 'margin-bottom': '20px'}),
-           dcc.Graph(figure=trend_fig),
-           dcc.Graph(figure=anomaly_fig)
+           dcc.Graph(id=f'trend-graph-{dataset}'),
+           dcc.Graph(id=f'anomaly-graph-{dataset}')
        ])
    ])
 
@@ -171,25 +171,31 @@ app.layout = html.Div([
 ])
 
 @app.callback(
-   [Output(f'summary-table-{dataset}', 'children') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]],
+   [Output(f'summary-table-{dataset}', 'children') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]] +
+   [Output(f'trend-graph-{dataset}', 'figure') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]] +
+   [Output(f'anomaly-graph-{dataset}', 'figure') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]],
    [Input(f'window-size-dropdown-{dataset}', 'value') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]] +
    [Input(f'sigma-level-dropdown-{dataset}', 'value') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]] +
    [Input(f'recent-batches-dropdown-{dataset}', 'value') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]] +
    [Input(f'trend-threshold-dropdown-{dataset}', 'value') for dataset in ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"]]
 )
-def update_summaries(*args):
+def update_tabs(*args):
    window_sizes = args[:6]
    sigma_levels = args[6:12]
    recent_batches = args[12:18]
    trend_thresholds = args[18:]
    summaries = []
+   trend_figs = []
+   anomaly_figs = []
    for dataset, window_size, sigma_level, recent_batch, trend_threshold in zip(
        ["DP72_Assay", "DP72_Chiral", "DP72_AUI", "DP72_Total_Impurity", "DP72_ROI", "DP72_Impurity-1"],
        window_sizes, sigma_levels, recent_batches, trend_thresholds
    ):
-       _, _, summary_table = load_data_and_create_graphs(dataset, window_size, sigma_level, recent_batch, trend_threshold)
+       trend_fig, anomaly_fig, summary_table = load_data_and_create_graphs(dataset, window_size, sigma_level, recent_batch, trend_threshold)
        summaries.append(summary_table)
-   return summaries
+       trend_figs.append(trend_fig)
+       anomaly_figs.append(anomaly_fig)
+   return summaries + trend_figs + anomaly_figs
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
