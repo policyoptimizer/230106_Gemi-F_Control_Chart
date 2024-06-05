@@ -48,7 +48,7 @@ def create_tabs():
 
 # 앱 레이아웃 설정
 app.layout = html.Div([
-   html.H1('제품 배치 분석 대시보드'),
+   html.H1('최근 배치 분석'),
    dcc.Tabs(id="tabs", children=create_tabs())
 ])
 
