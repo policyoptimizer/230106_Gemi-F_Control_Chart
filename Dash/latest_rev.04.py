@@ -34,10 +34,10 @@ def filter_by_year(df, start_year, end_year):
 def create_table(df, stats):
     header = [html.Tr([html.Th(col, style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns])]
     stats_rows = [
-        html.Tr([html.Td("평균", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
-                [html.Td(stats['mean'][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns if col in stats['mean']]),
-        html.Tr([html.Td("표준편차", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
-                [html.Td(stats['std'][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns if col in stats['std']])
+        html.Tr([html.Td("", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
+                [html.Td(stats['mean'][col] if col in stats['mean'] else "", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns]),
+        html.Tr([html.Td("", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
+                [html.Td(stats['std'][col] if col in stats['std'] else "", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns])
     ]
     rows = [html.Tr([html.Td(df.iloc[i][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns]) for i in range(len(df))]
     return html.Table(header + stats_rows + rows, style={'border': '1px solid black', 'border-collapse': 'collapse', 'width': '90%', 'margin': 'auto', 'margin-top': '20px'})
@@ -61,8 +61,18 @@ def create_tabs():
                     style={'width': '50%', 'margin': 'auto'}
                 ),
                 html.Div([
-                    dcc.Input(id=f'start-year-{dataset}', type='number', placeholder='시작 년도', style={'margin-right': '10px'}),
-                    dcc.Input(id=f'end-year-{dataset}', type='number', placeholder='종료 년도', style={'margin-right': '10px'}),
+                    dcc.Dropdown(
+                        id=f'start-year-{dataset}',
+                        options=[{'label': str(year), 'value': year} for year in range(20, 25)],
+                        placeholder='시작 년도',
+                        style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
+                    ),
+                    dcc.Dropdown(
+                        id=f'end-year-{dataset}',
+                        options=[{'label': str(year), 'value': year} for year in range(20, 25)],
+                        placeholder='종료 년도',
+                        style={'width': '45%', 'display': 'inline-block'}
+                    ),
                     html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
                 ], style={'text-align': 'center', 'margin': '10px 0'}),
                 html.Div(id=f'table-container-{dataset}')
@@ -101,7 +111,7 @@ def update_tables(*inputs):
         df = load_data(dataset)
         df = df.dropna(axis=1, how='all')  # 모든 값이 NaN인 칼럼 제거
        
-        if n_clicks > 0 and start_year is not None and end_year is not None:
+        if start_year is not None and end_year is not None and start_year <= end_year:
             filtered_df = filter_by_year(df, start_year, end_year)
             stats = {
                 'mean': filtered_df.mean().round(2),
