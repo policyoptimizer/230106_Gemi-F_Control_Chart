@@ -25,10 +25,11 @@ def get_recent_batches_and_stats(df, num_batches):
    return recent_batches, stats
 
 # 연도별 데이터 필터링 함수
-def filter_by_year(df, start_year, end_year):
-    df['연도'] = df['배치'].apply(lambda x: int(x[3:5]) if len(x.split(' ')[0]) == 3 else int(x[1:3]))
-    filtered_df = df[(df['연도'] >= start_year) & (df['연도'] <= end_year)]
+def filter_by_year(df, start_year, end_year): 
+    df['연도'] = df['배치'].apply(lambda x: int(x[1:3]) if x[0] == 'M' else int(x[3:5])) 
+    filtered_df = df[(df['연도'] >= start_year) & (df['연도'] <= end_year)] 
     return filtered_df
+
 
 # 테이블 생성 함수
 def create_table(df, stats):
