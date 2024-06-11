@@ -54,7 +54,7 @@ def create_tabs():
                     options=[
                         {'label': '30 배치', 'value': 30},
                         {'label': '50 배치', 'value': 50},
-                        {'label': '모든 결과', 'value': 'all'}
+                        {'label': '모든 배치', 'value': 'all'}
                     ],
                     value=30,
                     clearable=False,
