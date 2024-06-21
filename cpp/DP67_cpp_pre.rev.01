@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 import dataiku
-import pandas as pd
+import pandas as pd, numpy as np
+from dataiku import pandasutils as pdu
 
 # Read recipe inputs
 DP67_cpp_rev01 = dataiku.Dataset("DP67_cpp_rev01")
 DP67_cpp_rev01_df = DP67_cpp_rev01.get_dataframe()
 
+# Convert CollectionDate column to datetime format
+# Assuming the original format is a string that needs conversion
+DP67_cpp_rev01_df['CollectionDate'] = pd.to_datetime(DP67_cpp_rev01_df['CollectionDate'], format='%Y.%m.%d %H:%M')
+
 # Compute recipe outputs from inputs
-# 첫 번째 행은 남기고, 2, 3, 4행을 제외한 뒤 5행부터 남김
-DP67_cpp_df_df = pd.concat([DP67_cpp_rev01_df.iloc[[0]], DP67_cpp_rev01_df.iloc[4:]], ignore_index=True)
+# Here, we are only focusing on converting the date format
+DP67_cpp_df_df = DP67_cpp_rev01_df
 
 # Write recipe outputs
 DP67_cpp_df = dataiku.Dataset("DP67_cpp_df")
 DP67_cpp_df.write_with_schema(DP67_cpp_df_df)
-
