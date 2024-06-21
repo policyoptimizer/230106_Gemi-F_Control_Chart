@@ -4,16 +4,16 @@ import pandas as pd, numpy as np
 from dataiku import pandasutils as pdu
 
 # Read recipe inputs
-DP67_cpp_rev01 = dataiku.Dataset("DP67_cpp_rev01")
-DP67_cpp_rev01_df = DP67_cpp_rev01.get_dataframe()
+DP67_cpp_rev02 = dataiku.Dataset("DP67_cpp_rev02")
+DP67_cpp_rev02_df = DP67_cpp_rev02.get_dataframe()
 
-# Convert CollectionDate column to datetime format
-# Assuming the original format is a string that needs conversion
-DP67_cpp_rev01_df['CollectionDate'] = pd.to_datetime(DP67_cpp_rev01_df['CollectionDate'], format='%Y.%m.%d %H:%M')
 
 # Compute recipe outputs from inputs
-# Here, we are only focusing on converting the date format
-DP67_cpp_df_df = DP67_cpp_rev01_df
+# TODO: Replace this part by your actual code that computes the output, as a Pandas dataframe
+# NB: DSS also supports other kinds of APIs for reading and writing data. Please see doc.
+
+DP67_cpp_df_df = DP67_cpp_rev02_df # For this sample code, simply copy input to output
+
 
 # Write recipe outputs
 DP67_cpp_df = dataiku.Dataset("DP67_cpp_df")
