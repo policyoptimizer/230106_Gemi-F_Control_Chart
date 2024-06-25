@@ -1,5 +1,6 @@
 # 평균, 표준편차 여전히 이상함
 # 그래서 그냥 별도의 테이블로 구성하기로 함
+# 연도의 콜백 함수 반영이 안됨
 
 import dataiku
 from dash import Dash, dcc, html, Input, Output
@@ -40,7 +41,8 @@ def create_summary_table(stats):
                                [html.Td(stats['mean'][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in stats['mean'].index])
     summary_std_row = html.Tr([html.Td("표준편차", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
                               [html.Td(stats['std'][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in stats['std'].index])
-    summary_table = html.Table([summary_header, summary_mean_row, summary_std_row], style={'border': '1px solid black', 'border-collapse': 'collapse', 'width': '90%', 'margin': 'auto', 'margin-top': '20px'})
+    summary_table = html.Table([summary_header, summary_mean_row, summary_std_row],
+                               style={'border': '1px solid black', 'border-collapse': 'collapse', 'width': '90%', 'margin': 'auto', 'margin-top': '20px', 'background-color': '#f9f9f9'})
     return summary_table
 
 # 원본 데이터 테이블 생성 함수
@@ -56,34 +58,36 @@ def create_tabs():
     for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]:
         tabs.append(dcc.Tab(label=dataset, children=[
             html.Div([
-                html.H3(f'{dataset} 데이터 필터링', style={'text-align': 'center'}),
-                dcc.Dropdown(
-                    id=f'batch-dropdown-{dataset}',
-                    options=[
-                        {'label': '30 배치', 'value': 30},
-                        {'label': '50 배치', 'value': 50},
-                        {'label': '모든 배치', 'value': 'all'}
-                    ],
-                    value=30,
-                    clearable=False,
-                    style={'width': '50%', 'margin': 'auto'}
-                ),
+                html.H3(f'{dataset}', style={'text-align': 'center'}),
+                html.Div(id=f'table-container-{dataset}'),
                 html.Div([
                     dcc.Dropdown(
-                        id=f'start-year-{dataset}',
-                        options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
-                        placeholder='시작 년도',
-                        style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
+                        id=f'batch-dropdown-{dataset}',
+                        options=[
+                            {'label': '30 배치', 'value': 30},
+                            {'label': '50 배치', 'value': 50},
+                            {'label': '모든 배치', 'value': 'all'}
+                        ],
+                        value=30,
+                        clearable=False,
+                        style={'width': '50%', 'margin': 'auto'}
                     ),
-                    dcc.Dropdown(
-                        id=f'end-year-{dataset}',
-                        options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
-                        placeholder='종료 년도',
-                        style={'width': '45%', 'display': 'inline-block'}
-                    ),
-                    html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
-                ], style={'text-align': 'center', 'margin': '10px 0'}),
-                html.Div(id=f'table-container-{dataset}')
+                    html.Div([
+                        dcc.Dropdown(
+                            id=f'start-year-{dataset}',
+                            options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
+                            placeholder='시작 년도',
+                            style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
+                        ),
+                        dcc.Dropdown(
+                            id=f'end-year-{dataset}',
+                            options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
+                            placeholder='종료 년도',
+                            style={'width': '45%', 'display': 'inline-block'}
+                        ),
+                        html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
+                    ], style={'text-align': 'center', 'margin': '10px 0'}),
+                ], style={'text-align': 'center', 'margin': '20px 0'})
             ])
         ]))
     return tabs
@@ -129,12 +133,69 @@ def update_tables(*inputs):
             }
             summary_table = create_summary_table(stats)
             data_table = create_data_table(filtered_df)
-            tables.append(html.Div([summary_table, data_table]))
-            continue
+            tables.append(html.Div([summary_table,
+                                    html.Div([
+                                        dcc.Dropdown(
+                                            id=f'batch-dropdown-{dataset}',
+                                            options=[
+                                                {'label': '30 배치', 'value': 30},
+                                                {'label': '50 배치', 'value': 50},
+                                                {'label': '모든 배치', 'value': 'all'}
+                                            ],
+                                            value=30,
+                                            clearable=False,
+                                            style={'width': '50%', 'margin': 'auto'}
+                                        ),
+                                        html.Div([
+                                            dcc.Dropdown(
+                                                id=f'start-year-{dataset}',
+                                                options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
+                                                placeholder='시작 년도',
+                                                style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
+                                            ),
+                                            dcc.Dropdown(
+                                                id=f'end-year-{dataset}',
+                                                options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
+                                                placeholder='종료 년도',
+                                                style={'width': '45%', 'display': 'inline-block'}
+                                            ),
+                                            html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
+                                        ], style={'text-align': 'center', 'margin': '10px 0'}),
+                                    ], style={'text-align': 'center', 'margin': '20px 0'}),
+                                    data_table]))
            
         summary_table = create_summary_table(stats)
         data_table = create_data_table(recent_batches)
-        tables.append(html.Div([summary_table, data_table]))
+        tables.append(html.Div([summary_table,
+                                html.Div([
+                                    dcc.Dropdown(
+                                        id=f'batch-dropdown-{dataset}',
+                                        options=[
+                                            {'label': '30 배치', 'value': 30},
+                                            {'label': '50 배치', 'value': 50},
+                                            {'label': '모든 배치', 'value': 'all'}
+                                        ],
+                                        value=30,
+                                        clearable=False,
+                                        style={'width': '50%', 'margin': 'auto'}
+                                    ),
+                                    html.Div([
+                                        dcc.Dropdown(
+                                            id=f'start-year-{dataset}',
+                                            options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
+                                            placeholder='시작 년도',
+                                            style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
+                                        ),
+                                        dcc.Dropdown(
+                                            id=f'end-year-{dataset}',
+                                            options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
+                                            placeholder='종료 년도',
+                                            style={'width': '45%', 'display': 'inline-block'}
+                                        ),
+                                        html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
+                                    ], style={'text-align': 'center', 'margin': '10px 0'}),
+                                ], style={'text-align': 'center', 'margin': '20px 0'}),
+                                data_table]))
     return tables
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
