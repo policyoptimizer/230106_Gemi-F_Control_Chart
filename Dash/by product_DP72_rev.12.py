@@ -4,6 +4,7 @@
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
@@ -54,8 +55,10 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level, recent_b
     df['Anomaly_Rule4'] = check_rule_4(df[column_name], mean, std)
 
     # 추세선 그래프
-    trend_fig = px.line(df, x=batch_column, y=[column_name, 'MA', 'Upper_Bound', 'Lower_Bound'],
+    trend_fig = px.line(df, x=batch_column, y=[column_name, 'MA'],
                         title=f"{dataset_name} - Trend and Moving Average")
+    trend_fig.add_trace(go.Scatter(x=df[batch_column], y=df['Upper_Bound'], mode='lines', name='Upper Bound', line=dict(dash='dash')))
+    trend_fig.add_trace(go.Scatter(x=df[batch_column], y=df['Lower_Bound'], mode='lines', name='Lower Bound', line=dict(dash='dash')))
 
     # 이상치 탐지 그래프
     anomaly_fig = px.scatter(df, x=batch_column, y=column_name, title=f"{dataset_name} - Anomaly Detection")
@@ -151,14 +154,13 @@ def create_dp72_tab(dataset, window_size, sigma_level, recent_batches, trend_thr
                     clearable=False,
                     style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
                 ),
-                html.Label('제외된 배치', style={'margin-right': '10px'}),
                 dcc.Input(
                     id=f'excluded-batches-{dataset}',
                     type='text',
                     placeholder='배치 번호를 쉼표로 구분하여 입력',
                     style={'width': '30%', 'display': 'inline-block', 'margin-right': '10px'}
                 ),
-                html.Button('제외 반영', id=f'exclude-button-{dataset}', n_clicks=0)
+                html.Button('제외 반영', id=f'exclude-button-{dataset}', n_clicks=0, style={'display': 'inline-block'})
             ], style={'text-align': 'center', 'margin-bottom': '20px'}),
             dcc.Graph(id=f'trend-graph-{dataset}', config={'clickmode': 'event+select'}),
             dcc.Graph(id=f'anomaly-graph-{dataset}')
