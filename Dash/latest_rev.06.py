@@ -1,6 +1,6 @@
 # 평균, 표준편차 여전히 이상함
 # 그래서 그냥 별도의 테이블로 구성하기로 함
-# 연도의 콜백 함수 반영이 안됨
+# 현재까지는 가장 나음
 
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
