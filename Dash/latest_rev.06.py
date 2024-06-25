@@ -1,4 +1,5 @@
 # 평균, 표준편차 여전히 이상함
+# 그래서 그냥 별도의 테이블로 구성하기로 함
 
 import dataiku
 from dash import Dash, dcc, html, Input, Output
@@ -31,21 +32,23 @@ def filter_by_year(df, start_year, end_year):
     filtered_df = df[(df['연도'] >= start_year) & (df['연도'] <= end_year)]
     return filtered_df
 
-# 테이블 생성 함수 수정
-def create_table(df, stats):
-    header = [html.Tr([html.Th(col, style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns])]
-    stats_rows = [
-        html.Tr([html.Td(stats['mean'][col] if col in stats['mean'] else "", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center', 'background-color': '#f0f0f0'}) for col in df.columns]),
-        html.Tr([html.Td(stats['std'][col] if col in stats['std'] else "", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center', 'background-color': '#f0f0f0'}) for col in df.columns]),
-    ]
-    stats_header = [
-        html.Tr([html.Td("평균", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center', 'background-color': '#f0f0f0'})] +
-                [html.Td("", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center', 'background-color': '#f0f0f0'}) for _ in df.columns[1:]]),
-        html.Tr([html.Td("표준편차", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center', 'background-color': '#f0f0f0'})] +
-                [html.Td("", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center', 'background-color': '#f0f0f0'}) for _ in df.columns[1:]])
-    ]
+# 요약 테이블 생성 함수
+def create_summary_table(stats):
+    summary_header = html.Tr([html.Th("통계", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
+                             [html.Th(col, style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in stats['mean'].index])
+    summary_mean_row = html.Tr([html.Td("평균", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
+                               [html.Td(stats['mean'][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in stats['mean'].index])
+    summary_std_row = html.Tr([html.Td("표준편차", style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'})] +
+                              [html.Td(stats['std'][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in stats['std'].index])
+    summary_table = html.Table([summary_header, summary_mean_row, summary_std_row], style={'border': '1px solid black', 'border-collapse': 'collapse', 'width': '90%', 'margin': 'auto', 'margin-top': '20px'})
+    return summary_table
+
+# 원본 데이터 테이블 생성 함수
+def create_data_table(df):
+    header = html.Tr([html.Th(col, style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns])
     rows = [html.Tr([html.Td(df.iloc[i][col], style={'border': '1px solid black', 'padding': '5px', 'text-align': 'center'}) for col in df.columns]) for i in range(len(df))]
-    return html.Table(stats_header + stats_rows + header + rows, style={'border': '1px solid black', 'border-collapse': 'collapse', 'width': '90%', 'margin': 'auto', 'margin-top': '20px'})
+    data_table = html.Table([header] + rows, style={'border': '1px solid black', 'border-collapse': 'collapse', 'width': '90%', 'margin': 'auto', 'margin-top': '20px'})
+    return data_table
 
 # 탭 생성 함수
 def create_tabs():
@@ -124,12 +127,14 @@ def update_tables(*inputs):
                 'mean': filtered_df.mean().round(2),
                 'std': filtered_df.std().round(2)
             }
-            table = create_table(filtered_df, stats)
-            tables.append(table)
+            summary_table = create_summary_table(stats)
+            data_table = create_data_table(filtered_df)
+            tables.append(html.Div([summary_table, data_table]))
             continue
            
-        table = create_table(recent_batches, stats)
-        tables.append(table)
+        summary_table = create_summary_table(stats)
+        data_table = create_data_table(recent_batches)
+        tables.append(html.Div([summary_table, data_table]))
     return tables
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
