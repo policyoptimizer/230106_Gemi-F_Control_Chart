@@ -58,8 +58,7 @@ def create_tabs():
     for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]:
         tabs.append(dcc.Tab(label=dataset, children=[
             html.Div([
-                html.H3(f'{dataset} 데이터 필터링', style={'text-align': 'center'}),
-                html.Div(id=f'table-container-{dataset}'),
+                html.H3(f'{dataset}', style={'text-align': 'center'}),
                 html.Div([
                     dcc.Dropdown(
                         id=f'batch-dropdown-{dataset}',
@@ -87,7 +86,8 @@ def create_tabs():
                         ),
                         html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
                     ], style={'text-align': 'center', 'margin': '10px 0'}),
-                ], style={'text-align': 'center', 'margin': '20px 0'})
+                ], style={'text-align': 'center', 'margin': '20px 0'}),
+                html.Div(id=f'table-container-{dataset}')
             ])
         ]))
     return tabs
@@ -135,70 +135,12 @@ def update_tables(*inputs):
             }
             summary_table = create_summary_table(stats)
             data_table = create_data_table(filtered_df)
-            tables.append(html.Div([summary_table,
-                                    html.Div([
-                                        dcc.Dropdown(
-                                            id=f'batch-dropdown-{dataset}',
-                                            options=[
-                                                {'label': '30 배치', 'value': 30},
-                                                {'label': '50 배치', 'value': 50},
-                                                {'label': '모든 배치', 'value': 'all'}
-                                            ],
-                                            value=30,
-                                            clearable=False,
-                                            style={'width': '50%', 'margin': 'auto'}
-                                        ),
-                                        html.Div([
-                                            dcc.Dropdown(
-                                                id=f'start-year-{dataset}',
-                                                options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
-                                                placeholder='시작 년도',
-                                                style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
-                                            ),
-                                            dcc.Dropdown(
-                                                id=f'end-year-{dataset}',
-                                                options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
-                                                placeholder='종료 년도',
-                                                style={'width': '45%', 'display': 'inline-block'}
-                                            ),
-                                            html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
-                                        ], style={'text-align': 'center', 'margin': '10px 0'}),
-                                    ], style={'text-align': 'center', 'margin': '20px 0'}),
-                                    data_table]))
+            tables.append(html.Div([summary_table, data_table]))
             continue
 
         summary_table = create_summary_table(stats)
         data_table = create_data_table(recent_batches)
-        tables.append(html.Div([summary_table,
-                                html.Div([
-                                    dcc.Dropdown(
-                                        id=f'batch-dropdown-{dataset}',
-                                        options=[
-                                            {'label': '30 배치', 'value': 30},
-                                            {'label': '50 배치', 'value': 50},
-                                            {'label': '모든 배치', 'value': 'all'}
-                                        ],
-                                        value=30,
-                                        clearable=False,
-                                        style={'width': '50%', 'margin': 'auto'}
-                                    ),
-                                    html.Div([
-                                        dcc.Dropdown(
-                                            id=f'start-year-{dataset}',
-                                            options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
-                                            placeholder='시작 년도',
-                                            style={'width': '45%', 'display': 'inline-block', 'margin-right': '10px'}
-                                        ),
-                                        dcc.Dropdown(
-                                            id=f'end-year-{dataset}',
-                                            options=[{'label': '전체', 'value': None}] + [{'label': str(year), 'value': year} for year in range(20, 25)],
-                                            placeholder='종료 년도',
-                                            style={'width': '45%', 'display': 'inline-block'}
-                                        ),
-                                        html.Button('필터링', id=f'filter-button-{dataset}', n_clicks=0)
-                                    ], style={'text-align': 'center', 'margin': '10px 0'}),
-                                ], style={'text-align': 'center', 'margin': '20px 0'}),
-                                data_table]))
+        tables.append(html.Div([summary_table, data_table]))
     return tables
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
