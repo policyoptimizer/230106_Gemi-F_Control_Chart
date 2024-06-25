@@ -13,6 +13,10 @@ import numpy as np
 def load_data(dataset_name):
     dataset = dataiku.Dataset(dataset_name)
     df = dataset.get_dataframe()
+    # 칼럼명 영어로 수정
+    df.rename(columns={'제품': 'Product', '배치': 'Batch', '불순물(Triester)': 'Impurity(Triester)'}, inplace=True)
+    # Site 값 영어로 수정
+    df['Site'] = df['Site'].replace({'온산': 'Onsan', '익산': 'Iksan'})
     return df
 
 # 최근 배치 데이터 및 통계 계산 함수
@@ -95,7 +99,7 @@ def create_tabs():
 
 # 앱 레이아웃 설정
 app.layout = html.Div([
-    html.H1('최근 배치 분석', style={'text-align': 'center'}),
+    html.H1('최근 배치', style={'text-align': 'center'}),
     dcc.Tabs(id="tabs", children=create_tabs())
 ])
 
@@ -145,27 +149,16 @@ def update_tables(*inputs):
     return tables
 
 # CSV 다운로드 콜백 함수 설정
-@app.callback(
-    [Output(f'download-{dataset}', 'data') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [Input(f'download-button-{dataset}', 'n_clicks') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [State(f'batch-dropdown-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [State(f'start-year-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [State(f'end-year-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]]
-)
-def download_data(*inputs):
-    n_clicks_list = inputs[:6]
-    batch_sizes = inputs[6:12]
-    start_year_list = inputs[12:18]
-    end_year_list = inputs[18:]
-    downloads = []
-
-    for dataset, n_clicks, batch_size, start_year, end_year in zip(
-            ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"],
-            n_clicks_list,
-            batch_sizes,
-            start_year_list,
-            end_year_list):
-
+def create_download_callback(dataset):
+    @app.callback(
+        Output(f'download-{dataset}', 'data'),
+        Input(f'download-button-{dataset}', 'n_clicks'),
+        State(f'batch-dropdown-{dataset}', 'value'),
+        State(f'start-year-{dataset}', 'value'),
+        State(f'end-year-{dataset}', 'value'),
+        prevent_initial_call=True
+    )
+    def download_data(n_clicks, batch_size, start_year, end_year):
         df = load_data(dataset)
         df = df.dropna(axis=1, how='all')  # 모든 값이 NaN인 칼럼 제거
 
@@ -174,10 +167,10 @@ def download_data(*inputs):
         if batch_size != 'all':
             df = df.tail(batch_size)
 
-        # CSV 파일로 변환
-        downloads.append(dcc.send_data_frame(df.to_csv, f"{dataset}_filtered.csv"))
+        return dcc.send_data_frame(df.to_csv, f"{dataset}_filtered.csv")
 
-    return downloads
+for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]:
+    create_download_callback(dataset)
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
