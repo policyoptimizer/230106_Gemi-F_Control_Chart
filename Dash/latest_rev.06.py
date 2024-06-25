@@ -3,7 +3,7 @@
 # 연도의 콜백 함수 반영이 안됨
 
 import dataiku
-from dash import Dash, dcc, html, Input, Output
+from dash import Dash, dcc, html, Input, Output, State
 import pandas as pd
 import numpy as np
 
@@ -58,7 +58,7 @@ def create_tabs():
     for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]:
         tabs.append(dcc.Tab(label=dataset, children=[
             html.Div([
-                html.H3(f'{dataset}', style={'text-align': 'center'}),
+                html.H3(f'{dataset} 데이터 필터링', style={'text-align': 'center'}),
                 html.Div(id=f'table-container-{dataset}'),
                 html.Div([
                     dcc.Dropdown(
@@ -101,32 +101,34 @@ app.layout = html.Div([
 # 콜백 함수 설정
 @app.callback(
     [Output(f'table-container-{dataset}', 'children') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [Input(f'batch-dropdown-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
     [Input(f'filter-button-{dataset}', 'n_clicks') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [Input(f'start-year-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
-    [Input(f'end-year-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]]
+    [State(f'batch-dropdown-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
+    [State(f'start-year-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]],
+    [State(f'end-year-{dataset}', 'value') for dataset in ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"]]
 )
 def update_tables(*inputs):
-    tables = []
-    batch_sizes = inputs[:6]
-    n_clicks_list = inputs[6:12]
+    n_clicks_list = inputs[:6]
+    batch_sizes = inputs[6:12]
     start_year_list = inputs[12:18]
     end_year_list = inputs[18:]
-   
-    for dataset, batch_size, n_clicks, start_year, end_year in zip(
+    tables = []
+
+    for dataset, n_clicks, batch_size, start_year, end_year in zip(
             ["DP26", "DP37", "DP57", "DP58", "DP67", "DP72"],
-            batch_sizes,
             n_clicks_list,
+            batch_sizes,
             start_year_list,
             end_year_list):
-       
+
         df = load_data(dataset)
         df = df.dropna(axis=1, how='all')  # 모든 값이 NaN인 칼럼 제거
-       
+
         if start_year is None and end_year is None:
             recent_batches, stats = get_recent_batches_and_stats(df, batch_size if batch_size != 'all' else len(df))
         else:
             filtered_df = filter_by_year(df, start_year, end_year)
+            if batch_size != 'all':
+                filtered_df = filtered_df.tail(batch_size)
             stats = {
                 'mean': filtered_df.mean().round(2),
                 'std': filtered_df.std().round(2)
@@ -163,7 +165,8 @@ def update_tables(*inputs):
                                         ], style={'text-align': 'center', 'margin': '10px 0'}),
                                     ], style={'text-align': 'center', 'margin': '20px 0'}),
                                     data_table]))
-           
+            continue
+
         summary_table = create_summary_table(stats)
         data_table = create_data_table(recent_batches)
         tables.append(html.Div([summary_table,
