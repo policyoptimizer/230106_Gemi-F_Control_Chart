@@ -26,7 +26,8 @@ def check_rule_3(series):
 
 def check_rule_4(series, mean, std):
     two_std = (series > mean + 2 * std) | (series < mean - 2 * std)
-    return two_std.rolling(window=14).apply(lambda x: np.sum(x) >= 2, raw=True).fillna(0).astype(bool)
+    rule_4_violations = two_std.rolling(window=14).sum().ge(2).astype(bool)
+    return rule_4_violations, two_std
 
 # 데이터셋 로드 및 그래프 생성 함수
 def load_data_and_create_graphs(dataset_name, window_size, sigma_level, recent_batches, trend_threshold, excluded_batches):
@@ -53,7 +54,9 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level, recent_b
     df['Anomaly_Rule1'] = check_rule_1(df[column_name], mean, std)
     df['Anomaly_Rule2'] = check_rule_2(df[column_name], mean)
     df['Anomaly_Rule3'] = check_rule_3(df[column_name])
-    df['Anomaly_Rule4'] = check_rule_4(df[column_name], mean, std)
+    rule_4_violations, two_std = check_rule_4(df[column_name], mean, std)
+    df['Anomaly_Rule4'] = rule_4_violations
+    df['Two_Std'] = two_std
     df['Normal'] = ~(df['Anomaly_Rule1'] | df['Anomaly_Rule2'] | df['Anomaly_Rule3'] | df['Anomaly_Rule4'])
 
     # 추세선 그래프
@@ -63,17 +66,16 @@ def load_data_and_create_graphs(dataset_name, window_size, sigma_level, recent_b
     trend_fig.add_trace(go.Scatter(x=df[batch_column], y=df['Lower_Bound'], mode='lines', name='Lower Bound', line=dict(dash='dash')))
 
     # 이상치 탐지 그래프
-    anomaly_fig = px.scatter(df, x=batch_column, y=column_name, title=f"{dataset_name} - Anomaly Detection")
-    anomaly_fig.add_scatter(x=df[batch_column][df['Anomaly_Rule1']], y=df[column_name][df['Anomaly_Rule1']],
-                            mode='markers', name='Rule 1 Violation', marker=dict(color='red'))
-    anomaly_fig.add_scatter(x=df[batch_column][df['Anomaly_Rule2']], y=df[column_name][df['Anomaly_Rule2']],
-                            mode='markers', name='Rule 2 Violation', marker=dict(color='purple'))
-    anomaly_fig.add_scatter(x=df[batch_column][df['Anomaly_Rule3']], y=df[column_name][df['Anomaly_Rule3']],
-                            mode='markers', name='Rule 3 Violation', marker=dict(color='green'))
-    anomaly_fig.add_scatter(x=df[batch_column][df['Anomaly_Rule4']], y=df[column_name][df['Anomaly_Rule4']],
-                            mode='markers', name='Rule 4 Violation', marker=dict(color='orange'))
-    anomaly_fig.add_scatter(x=df[batch_column][df['Normal']], y=df[column_name][df['Normal']],
-                            mode='markers', name='Normal', marker=dict(color='lightgrey'))
+    anomaly_fig = go.Figure()
+    anomaly_fig.add_trace(go.Scatter(x=df[batch_column], y=df[column_name], mode='markers', name='Normal', marker=dict(color='lightgrey')))
+    anomaly_fig.add_trace(go.Scatter(x=df[batch_column][df['Anomaly_Rule1']], y=df[column_name][df['Anomaly_Rule1']],
+                                     mode='markers', name='Rule 1 Violation', marker=dict(color='red')))
+    anomaly_fig.add_trace(go.Scatter(x=df[batch_column][df['Anomaly_Rule2']], y=df[column_name][df['Anomaly_Rule2']],
+                                     mode='markers', name='Rule 2 Violation', marker=dict(color='purple')))
+    anomaly_fig.add_trace(go.Scatter(x=df[batch_column][df['Anomaly_Rule3']], y=df[column_name][df['Anomaly_Rule3']],
+                                     mode='markers', name='Rule 3 Violation', marker=dict(color='green')))
+    anomaly_fig.add_trace(go.Scatter(x=df[batch_column][df['Two_Std']], y=df[column_name][df['Two_Std']],
+                                     mode='markers', name='Rule 4 Violation (2σ)', marker=dict(color='orange')))
 
     # 요약 통계 계산
     min_value = df[column_name].min()
@@ -232,5 +234,4 @@ def update_tabs(*args):
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
-
 
