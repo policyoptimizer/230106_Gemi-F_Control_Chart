@@ -1,3 +1,6 @@
+# 넬슨법칙 수정
+# 정상 배치 회색 표기, 9번째 배치부터 이상으로 표기
+
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
 import plotly.express as px
