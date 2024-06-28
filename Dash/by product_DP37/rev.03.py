@@ -178,7 +178,7 @@ def create_dp37_tabs(window_size, sigma_level, recent_batches, trend_threshold):
 
 # 앱 레이아웃 설정
 app.layout = html.Div([
-    html.H1('DP37 Analysis Dashboard'),
+    html.H1('CQA DP37 Assay'),
     dcc.Tabs(id="dp37-tabs", children=create_dp37_tabs(5, 1, 5, 0.02)),
     html.Div([
         html.H3('넬슨 법칙'),
