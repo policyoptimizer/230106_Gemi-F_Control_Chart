@@ -16,7 +16,7 @@ def load_data(dataset_name):
 # 신호등 상태 결정 함수
 def determine_status(value, spec_min=None, spec_max=None, info_only=False):
     if info_only:
-        return 'blue'  # Information Only 항목은 파란색으로 표시
+        return '#ADD8E6'  # 연한 파란색 (Light Blue)
     if spec_min is not None and spec_max is not None:
         if spec_min <= value <= spec_max:
             return 'green'
@@ -44,15 +44,17 @@ def determine_status(value, spec_min=None, spec_max=None, info_only=False):
 # app = dash.Dash(__name__)
 
 app.layout = html.Div([
-    html.H1('제품별 신호등: 빨강, 노랑, 초록, 우리가 이긴다!'),
+    html.H1('제품 품질 신호등: 우리 Gemi 푸르게 푸르게'),
     html.Div(id='signals'),
     html.Button('데이터 로드 및 신호등 업데이트', id='update-button', n_clicks=0),
+    html.Div(id='criteria-output', style={'margin-top': '20px', 'white-space': 'pre-wrap'}),
     html.Div(id='debug-output', style={'margin-top': '20px', 'white-space': 'pre-wrap'})
 ], style={'text-align': 'center'})
 
 @app.callback(
     [Output('signals', 'children'),
-     Output('debug-output', 'children')],
+     Output('debug-output', 'children'),
+     Output('criteria-output', 'children')],
     [Input('update-button', 'n_clicks')]
 )
 def update_signals(n_clicks):
@@ -78,6 +80,7 @@ def update_signals(n_clicks):
 
         signals = []
         debug_message = ""
+        criteria_message = "신호등 기준:\n빨강: 규격을 벗어남\n초록: 정상\n노랑: 위험\n파랑: 정보만 표시\n"
 
         for dataset_name, (spec_min, spec_max, info_only) in datasets.items():
             df = load_data(dataset_name)
@@ -92,11 +95,11 @@ def update_signals(n_clicks):
                 debug_message += f"{dataset_name} Columns: {df.columns.tolist()}\n{dataset_name} Head:\n{df.head()}\n"
                 debug_message += f"Latest {dataset_name} Value: {latest_value}\n{dataset_name} Status: {status}\n\n"
 
-                signals.append(html.Div(id=f'signal-{dataset_name}', style={'width': '100px', 'height': '100px', 'background-color': status}, children=dataset_name))
+                signals.append(html.Div(id=f'signal-{dataset_name}', style={'width': '100px', 'height': '100px', 'background-color': status, 'display': 'inline-block', 'margin': '10px'}, children=dataset_name))
        
-        return signals, debug_message
+        return signals, debug_message, criteria_message
    
-    return [], 'No data loaded'
+    return [], 'No data loaded', '신호등 기준:\n빨강: 규격을 벗어남\n초록: 정상\n노랑: 위험\n파랑: 정보만 표시\n'
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
