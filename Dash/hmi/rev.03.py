@@ -1,3 +1,5 @@
+# DP26_Assay, DP37_Assay 는 Information Only 라서 초록이 될 수 없음
+
 import dataiku
 import dash
 from dash import dcc, html
