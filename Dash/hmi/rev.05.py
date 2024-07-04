@@ -149,6 +149,7 @@ def create_value_chain(signals):
 
     edges = [
         ('DP14', 'DP18'),
+        ('DP18', 'DP60'),
         ('DP26', 'DP37'),
         ('DP37', 'DP57'),
         ('DP58', 'DP57'),
