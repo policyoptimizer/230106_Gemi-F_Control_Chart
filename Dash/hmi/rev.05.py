@@ -48,7 +48,7 @@ def determine_status(value, spec_min=None, spec_max=None, info_only=False):
 # app = dash.Dash(__name__)
 
 app.layout = html.Div([
-    html.H1('제품 품질 신호등: 우리 Gemi 푸르게 푸르게'),
+    html.H1('품질 신호등: 우리 Gemi 푸르게 푸르게'),
     html.Div(id='value-chain', style={'display': 'flex', 'justify-content': 'center'}),
     html.Button('데이터 로드 및 신호등 업데이트', id='update-button', n_clicks=0),
     html.Div(id='criteria-output', style={'position': 'absolute', 'bottom': '20px', 'right': '20px', 'text-align': 'left', 'white-space': 'pre-wrap'}),
