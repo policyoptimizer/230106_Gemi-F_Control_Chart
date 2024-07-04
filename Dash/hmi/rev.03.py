@@ -25,7 +25,14 @@ def determine_status(value, spec_min=None, spec_max=None):
     elif spec_max is not None:
         if value <= spec_max:
             return 'green'
-        elif value > spec_max * 1.1:
+        elif value > spec_max:
+            return 'red'
+        else:
+            return 'yellow'
+    elif spec_min is not None:
+        if value >= spec_min:
+            return 'green'
+        elif value < spec_min:
             return 'red'
         else:
             return 'yellow'
@@ -35,7 +42,7 @@ def determine_status(value, spec_min=None, spec_max=None):
 # app = dash.Dash(__name__)
 
 app.layout = html.Div([
-    html.H1('제품별 신호등: 빨강, 노랑, 초록, 우리가 이긴다!'),
+    html.H1('제품 품질 신호등: 우리 Gemi 푸르게 푸르게'),
     html.Div(id='signals'),
     html.Button('데이터 로드 및 신호등 업데이트', id='update-button', n_clicks=0),
     html.Div(id='debug-output', style={'margin-top': '20px', 'white-space': 'pre-wrap'})
@@ -49,9 +56,9 @@ app.layout = html.Div([
 def update_signals(n_clicks):
     if n_clicks > 0:
         datasets = {
-            "DP26_Assay": (None, None),
+            "DP26_Assay": (None, None),  # Assay는 Information Only
             "DP26_Triester": (None, 0.5),
-            "DP37_Assay": (None, None),
+            "DP37_Assay": (None, None),  # Assay는 Information Only
             "DP57_Assay": (93.0, 102.0),
             "DP57_Chiral": (97.0, None),
             "DP57_Total_Impurity": (None, 5.0),
@@ -92,5 +99,4 @@ def update_signals(n_clicks):
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
-
 
