@@ -2,7 +2,6 @@
 # 이제 중요 시험 항목만 추출함
 # 이 때 시험명은 영어로 변경함
 
-
 ```
 site : Iksan
 product : DP72
@@ -61,27 +60,24 @@ product : DP58
 site : Onsan
 product : DP58 onsan
 
-
-
-
-
-
-
-
-
-
-
 BAN-함량01 > Assay
-
 BAN-Chiral순도01 > Chiral
 
-106113-함량01 > Assay
+site : Onsan
+product : DP26
 
 106113-Assay(NMR)01 > Assay
+106113-함량01 > Assay
+106113-Triester01 > Impurity(Triester)
 
-106113-Triester01 > Triester
+site : Onsan
+product : DP26 onsan
 
-HFP-NMR01 > NMR
+HFP-NMR01 > Assay
+HFP-Triester01 > Impurity(Triester)
+
+site : Osong
+product : 
 
 GEM-함량01 > Assay
 
