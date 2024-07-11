@@ -4,8 +4,8 @@
 
 
 ```
-product : DP72
 site : Iksan
+product : DP72
 
 DPB-정량01 > Assay
 DPB-키랄순도01 > Chiral
@@ -14,49 +14,62 @@ DPB-순도(DP-IMP-1)01 > Impurity-1
 DPB-순도(미특정불순물)01 > AUI
 DPB-강열잔분01 > ROI
 
-product : DP67
 site : Iksan
+product : DP67
 
 DPT-순도(총불순물)01 > Total Impurity
 DPT-순도(DP-IMP-1)01 > Impurity-1
 DPT-순도(미특정불순물)01 > AUI
 
-DP
-
+site : Onsan
+product : DP72
 
 DPS-함량01 > Assay
-
 DPS-Chiral순도01 > Chiral
-
 DPS-총불순물합01 > Total Impurity
+DPS-DP-IMP-101 > Impurity-1
+DPS-DPIMP101 > Impurity-1
+DPS-개별불순물01 > Impurity-1
+DPS-강열잔분01 > ROI
 
-DPS-DP-IMP-101 > Impurity
+site : Onsan
+product : DP67
 
-DPS-DPIMP101 > DP Impurity
+DPY-유기부성분총합01 > Total Impurity
+DPY-부성분(DP-IMP-1)01 > AUI
+DPY-신규부성분01 > AUI
 
-DPS-개별불순물01 > Individual Impurity
-
-DPS-강열잔분01 > Residue
-
-DPY-유기부성분총합01 > Total Organic Impurity
-
-DPY-부성분(DP-IMP-1)01 > Impurity
-
-DPY-신규부성분01 > New Impurity
+site : Onsan
+product : DP57
 
 DPF-함량01 > Assay
-
 DPF-Chiral01 > Chiral
+DPF-유기부성분총합01 > Total Impurity
 
-DPF-유기부성분총합01 > Total Organic Impurity
+site : Onsan
+product : DP37
 
 NFP0000D-Assay(NMR01 > Assay
-
 NFP0000D-함량01 > Assay
 
+site : Onsan
+product : DP58
+               
 106114-함량01 > Assay
-
 106114-Chiral순도01 > Chiral
+
+site : Onsan
+product : DP58 
+
+
+
+
+
+
+
+
+
+
 
 BAN-함량01 > Assay
 
