@@ -1,24 +1,25 @@
 # 제품별로 df 별도로 구성함
 
-
+```
+product : DP72
+site : Iksan
 
 DPB-정량01 > Assay
-
-DPB-키랄순도01 > Chiral Purity
-
+DPB-키랄순도01 > Chiral
 DPB-순도(총불순물)01 > Total Impurity
+DPB-순도(DP-IMP-1)01 > Impurity-1
+DPB-순도(미특정불순물)01 > AUI
+DPB-강열잔분01 > ROI
 
-DPB-순도(DP-IMP-1)01 > Impurity
-
-DPB-순도(미특정불순물)01 > Unspecified Impurity
-
-DPB-강열잔분01 > Residue
+product : DP67
+site : Iksan
 
 DPT-순도(총불순물)01 > Total Impurity
+DPT-순도(DP-IMP-1)01 > Impurity-1
+DPT-순도(미특정불순물)01 > AUI
 
-DPT-순도(DP-IMP-1)01 > Impurity
+DP
 
-DPT-순도(미특정불순물)01 > Unspecified Impurity
 
 DPS-함량01 > Assay
 
@@ -105,7 +106,7 @@ ZMJ-제미총유연물질01 > Total Gemigliptin Related Substances01
 ZMJ-DP-IMP-1제미유연물질01 > Gemigliptin DP-IMP-1 Related Substances01
 
 ZMJ-제미미지유연물질01 > Unknown Gemigliptin Related Substances01
-
+```
 
 
 
