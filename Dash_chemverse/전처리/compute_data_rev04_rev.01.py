@@ -1,4 +1,7 @@
-# 제품별로 df 별도로 구성함
+# 이미 제품별로는 나눴고,
+# 이제 중요 시험 항목만 추출함
+# 이 때 시험명은 영어로 변경함
+
 
 ```
 product : DP72
@@ -111,8 +114,7 @@ ZMJ-제미미지유연물질01 > Unknown Gemigliptin Related Substances01
 
 
 
-
-
+# -*- coding: utf-8 -*-
 import dataiku
 import pandas as pd, numpy as np
 from dataiku import pandasutils as pdu
@@ -122,5 +124,14 @@ data_rev03 = dataiku.Dataset("data_rev03")
 data_rev03_df = data_rev03.get_dataframe()
 
 
+# Compute recipe outputs from inputs
+# TODO: Replace this part by your actual code that computes the output, as a Pandas dataframe
+# NB: DSS also supports other kinds of APIs for reading and writing data. Please see doc.
 
+data_rev04_df = data_rev03_df # For this sample code, simply copy input to output
+
+
+# Write recipe outputs
+data_rev04 = dataiku.Dataset("data_rev04")
+data_rev04.write_with_schema(data_rev04_df)
 
