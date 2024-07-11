@@ -59,7 +59,7 @@ product : DP58
 106114-Chiral순도01 > Chiral
 
 site : Onsan
-product : DP58 
+product : DP58 onsan
 
 
 
