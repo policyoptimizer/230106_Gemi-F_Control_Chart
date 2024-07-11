@@ -1,3 +1,7 @@
+# 수 많은 데이터에서 일단 필요한 제품만 추출
+# df.shape
+# >(859 740, 28)
+
 # -*- coding: utf-8 -*-
 import dataiku
 import pandas as pd
