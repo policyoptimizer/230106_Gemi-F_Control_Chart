@@ -77,47 +77,88 @@ HFP-NMR01 > Assay
 HFP-Triester01 > Impurity(Triester)
 
 site : Osong
-product : 
+product : Zemiglo
 
 GEM-함량01 > Assay
+GEM-총유연물질01 > Total Impurity
+GEM-DPIMP1유연물질01 > Impurity-1
+GEM-미지개개유연물질01 > AUI
 
-GEM-총유연물질01 > Related Substances
+site : Osong
+product : Zemidapa
 
-GEM-DPIMP1유연물질01 > DP IMP Related Substances
+GLA-제미글립틴함량01 > Assay
+GLA-제미총유연물질01 > Total Impurity
+GLA-제미DPIMP1유연물질01 > Impurity-1
+GLA-제미미지유연물질01 > Impurity-1
 
-GEM-미지개개유연물질01 > Unknown Individual Related Substances
+site : Osong
+product : Zemimet 50/500mg
 
-GLA-제미글립틴함량01 > Gemigliptin Assay
+GMT-제미글립틴함량01 > Assay
+GMT-제미총유연물질01 > Total Impurity
+GMT-DPIMP1제미유연물질01 > Impurity-1
+GMT-제미미지유연물질01 > Impurity-1
 
-GLA-제미총유연물질01 > Gemigliptin Related Substances
+site : Osong
+product : Zemimet 50/1000mg
 
-GLA-제미DPIMP1유연물질01 > Gemigliptin DPIMP1 Related Substances
+ZMG-제미글립틴함량01 > Assay
+ZMG-총제미유연물질01 > Total Impurity
+ZMG-DPIMP1제미유연물질01 > Impurity-1
+ZMG-미지제미유연물질01 > Impurity-1
 
-GLA-제미미지유연물질01 > Unknown Gemigliptin Related Substances
+site : Osong
+product : Zemimet 25/500mg
 
-GMT-제미글립틴함량01 > Gemigliptin Assay
+ZMJ-제미글립틴함량01 > Assay
+ZMJ-제미글립틴함량02 > Assay
+ZMJ-제미총유연물질01 > Total Impurity
+ZMJ-DP-IMP-1제미유연물질01 > Impurity-1
+ZMJ-제미미지유연물질01 > Impurity-1
+# ZMJ-DPIMP3제미유연물질01??
 
-GMT-제미총유연물질01 > Total Gemigliptin Related Substances
 
-GMT-DPIMP1제미유연물질01 > Gemigliptin DPIMP1 Related Substances
 
-GMT-제미미지유연물질01 > Unknown Gemigliptin Related Substances
+site : Osong
+product : Zemimet 25/1000mg
 
-ZMG-제미글립틴함량01 > Gemigliptin Assay
+ZMK-제미글립틴함량01 > Assay
+ZMK-제미총유연물질01 > Total Impurity
+ZMK-제미DPIMP1유연물질01 > Impurity-1
+ZMK-제미미지유연물질01 > Impurity-1
 
-ZMG-총제미유연물질01 > Total Gemigliptin Related Substances
+site : Osong
+product : Zemilow 50/5mg
 
-ZMG-DPIMP1제미유연물질01 > Gemigliptin DPIMP1 Related Substances
+ZRA-제미글립틴함량01 > Assay
+ZRA-총유연물질01 > Total Impurity
+ZRA-DPIMP1제미유연물질01 > Impurity-1
+ZRA-미지유연물질01 > Impurity-1
 
-ZMJ-제미글립틴함량01 > Gemigliptin Assay01
+site : Osong
+product : Zemilow 50/10mg
 
-ZMJ-제미글립틴함량02 > Gemigliptin Assay02
+ZRB-제미글립틴함량01 > Assay
+ZRB-총유연물질01 > Total Impurity
+ZRB-DPIMP1제미유연물질01 > Impurity-1
+ZRB-미지유연물질01 > Impurity-1
 
-ZMJ-제미총유연물질01 > Total Gemigliptin Related Substances01
+site : Osong
+product : Zemilow 50/20mg
 
-ZMJ-DP-IMP-1제미유연물질01 > Gemigliptin DP-IMP-1 Related Substances01
+ZRC-제미글립틴함량01 > Assay
+ZRC-총유연물질01 > Total Impurity
+ZRC-DPIMP1제미유연물질01 > Impurity-1
+ZRC-미지유연물질01 > Impurity-1
 
-ZMJ-제미미지유연물질01 > Unknown Gemigliptin Related Substances01
+site : Osong
+product : Zemimet 25/750mg
+
+ZML-제미글립틴함량01 > Assay
+ZML-제미총유연물질01 > Total Impurity
+ZML-제미DPIMP1유연물질01 > Impurity-1
+ZML-제미미지유연물질01 > Impurity-1
 ```
 
 
