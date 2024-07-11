@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# 제품별로 df 별도로 구성함
+
 import dataiku
 import pandas as pd, numpy as np
 from dataiku import pandasutils as pdu
