@@ -1,3 +1,11 @@
+# - 제품명에 _c 가 붙어 있음
+# - DP26, DP26 onsan, DP37, DP57 등으로 되어야 함
+
+# - 제품명 탭은 3 줄로 구성되어야 함
+
+# - DP67, DP72 는 익산, 온산 겹치는데
+#   해당 부분은 사용자가 익산, 온산 선택할 수 있게 상단에 버튼이 추가되어야 함
+
 # -*- coding: utf-8 -*-
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
