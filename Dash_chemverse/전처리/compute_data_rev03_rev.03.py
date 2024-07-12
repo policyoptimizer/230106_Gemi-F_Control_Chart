@@ -1,3 +1,14 @@
+# 여전히 아래 제품들은 추출되지 않았습니다.
+
+# # 'DP26 onsan'    # 누락
+# # 'DP58 onsan'      # 누락
+# # 'Zemimet 25/750mg'    # 누락
+
+# raw 데이터를 확인해봤을 때
+# BAN24001 도 있고 (DP58 onsan 으로 product 명 추가 되어야 함)
+# HFP24001 도 있고 (DP26 onsan 으로 product 명 추가 되어야 함)
+# ZML23501 도 있습니. (Zemimet 25/750mg 으로 product 명 추가 되어야 함)
+
 # 수 많은 데이터에서 일단 필요한 제품만 추출
 # df.shape
 # >(859 740, 28)
