@@ -2,6 +2,19 @@
 # df.shape
 # >(859 740, 28)
 
+# 'Zemiglo'
+# 'Zemidapa'
+
+# 'Zemimet 25/500mg'
+# 'Zemimet 25/750mg'
+# 'Zemimet 25/1000mg'
+# 'Zemimet 50/500mg'
+# 'Zemimet 50/1000mg'
+
+# 'Zemilow 50/5mg'
+# 'Zemilow 50/10mg'
+# 'Zemilow 50/20mg'
+
 # -*- coding: utf-8 -*-
 import dataiku
 import pandas as pd
