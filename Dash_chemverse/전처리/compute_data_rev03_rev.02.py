@@ -2,6 +2,23 @@
 # df.shape
 # >(859 740, 28)
 
+# 총 20개 제품
+# - 익산 2
+# - 온산 8
+# - 오송 10
+
+# 'DP72', 'Iksan'
+# 'DP67', 'Iksan'
+
+# 'DP26' # 누락
+# 'DP26 onsan'
+# 'DP37'
+# 'DP57'
+# 'DP58' # 누락
+# 'DP58 onsan'
+# 'DP67'
+# 'DP72'
+
 # 'Zemiglo'
 # 'Zemidapa'
 
