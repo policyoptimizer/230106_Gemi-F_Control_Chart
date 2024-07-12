@@ -1,3 +1,5 @@
+# 데이터이쿠에서 데이터를 분배하는 새로운 방법
+
 # -*- coding: utf-8 -*-
 import dataiku
 import pandas as pd, numpy as np
