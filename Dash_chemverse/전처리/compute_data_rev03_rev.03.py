@@ -10,17 +10,17 @@
 # 'DP72', 'Iksan'
 # 'DP67', 'Iksan'
 
-# 'DP26'         # 누락
+# 'DP26'
 # 'DP26 onsan'    # 누락
-# 'DP37'          # 누락
+# 'DP37'
 # 'DP57'
-# 'DP58'           # 누락
+# 'DP58'
 # 'DP58 onsan'      # 누락
 # 'DP67'
 # 'DP72'
 
 # 'Zemiglo'
-# 'Zemidapa'            # 누락
+# 'Zemidapa'
 
 # 'Zemimet 25/500mg'
 # 'Zemimet 25/750mg'    # 누락
