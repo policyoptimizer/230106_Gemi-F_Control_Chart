@@ -1,6 +1,9 @@
 # 그나마 돌아가는데 완벽하지는 않음
 # 익산, 온산 필터 버튼도 작동 안하고
 
+# 그나마 돌아가는데 완벽하지는 않음
+# 익산, 온산 필터 버튼도 작동 안하고
+
 # -*- coding: utf-8 -*-
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
@@ -232,5 +235,3 @@ for dataset in [
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
-
-
