@@ -1,9 +1,6 @@
 # 그나마 돌아가는데 완벽하지는 않음
 # 익산, 온산 필터 버튼도 작동 안하고
 
-# 그나마 돌아가는데 완벽하지는 않음
-# 익산, 온산 필터 버튼도 작동 안하고
-
 # -*- coding: utf-8 -*-
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
