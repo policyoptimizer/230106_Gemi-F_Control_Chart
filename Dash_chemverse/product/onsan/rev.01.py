@@ -1,3 +1,6 @@
+# 일단 보여지긴 함
+# 사용자 버튼도 없고, 그래프가 크레파스로 막 그린 것 같음
+
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
 import plotly.express as px
