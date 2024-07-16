@@ -110,7 +110,7 @@ def create_product_tab(df, product, window_size, sigma_level, recent_batches, tr
                             id=f'{product}-{insp_code}-recent-batches-dropdown',
                             options=[{'label': f'{i} 배치', 'value': i} for i in [5, 7, 10]],
                             value=recent_batches,
-                            style={'margin-right': '40px'}
+                            style={'margin-right': '60px'}
                         ),
                         html.Label('경향성 판단 Threshold:', style={'margin-right': '15px'}),
                         dcc.Dropdown(
@@ -136,7 +136,7 @@ def create_product_tab(df, product, window_size, sigma_level, recent_batches, tr
                             style={'margin-right': '40px'}
                         ),
                         html.Label('제외할 배치 번호:', style={'margin-right': '15px'}),
-                        dcc.Input(id=f'{product}-{insp_code}-exclude-batches-input', type='text', value='', style={'margin-right': '60px'}),
+                        dcc.Input(id=f'{product}-{insp_code}-exclude-batches-input', type='text', value='', style={'margin-right': '80px'}),
                         html.Button('적용', id=f'{product}-{insp_code}-apply-button', n_clicks=0)
                     ], style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'flex-wrap': 'wrap'})
                 ]),
