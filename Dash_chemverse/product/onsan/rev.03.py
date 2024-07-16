@@ -1,3 +1,6 @@
+# 사용자가 선택할 수 있는 버튼 위치를 일부 조정함
+# 데이터는 여전히 크레파스로 그린 것 같음
+
 import dataiku
 from dash import Dash, dcc, html, Input, Output, State
 import plotly.express as px
