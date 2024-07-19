@@ -209,10 +209,9 @@ def update_content(n_clicks):
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=edge_x, y=edge_y,
-        line=dict(width=2, color='black', dash='solid'),
+        line=dict(width=2, color='black'),
         hoverinfo='none',
-        mode='lines+markers',
-        marker=dict(symbol='arrow-bar-up', size=12, angleref='previous', anglerefs='previous')
+        mode='lines'
     ))
 
     fig.add_trace(go.Scatter(
@@ -243,6 +242,4 @@ def toggle_raw_data(n_clicks):
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
-
-
 
