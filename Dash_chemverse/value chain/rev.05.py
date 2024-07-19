@@ -64,6 +64,7 @@ edges = [
     {'from': 'DP26', 'to': 'DP37'},
     {'from': 'DP18', 'to': 'DP60'},
     {'from': 'DP37', 'to': 'DP57'},
+    {'from': 'DP58', 'to': 'DP57'},
     {'from': 'DP57', 'to': 'DP60'},
     {'from': 'DP60', 'to': 'DP67'},
     {'from': 'DP67', 'to': 'DP72'},
