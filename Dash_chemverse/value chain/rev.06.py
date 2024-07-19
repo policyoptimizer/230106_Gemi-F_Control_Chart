@@ -1,3 +1,7 @@
+# 우선 비슷하게 밸류 체인 그렸음
+# 신호등 제대로 작동 안하고,
+# 하단에 raw data 확인 잘 안됨
+
 import dataiku
 import dash
 from dash import dcc, html
@@ -44,19 +48,19 @@ def determine_status(value, spec_min=None, spec_max=None, info_only=False):
 
 # 노드와 엣지 정의
 nodes = [
-    {'id': 'DP14', 'label': 'DP14', 'pos': (1, 8), 'group': 'group1'},
-    {'id': 'DP58', 'label': 'DP58', 'pos': (1, 6), 'group': 'group1'},
-    {'id': 'DP26', 'label': 'DP26', 'pos': (1, 4), 'group': 'group1'},
-    {'id': 'DP37', 'label': 'DP37', 'pos': (2, 4), 'group': 'group2'},
-    {'id': 'DP18', 'label': 'DP18', 'pos': (3, 8), 'group': 'group2'},
-    {'id': 'DP57', 'label': 'DP57', 'pos': (3, 6), 'group': 'group2'},
-    {'id': 'DP60', 'label': 'DP60', 'pos': (5, 6), 'group': 'group3'},
-    {'id': 'DP67', 'label': 'DP67', 'pos': (7, 6), 'group': 'group3'},
-    {'id': 'DP72', 'label': 'DP72', 'pos': (9, 6), 'group': 'group3'},
-    {'id': 'Gemiglo', 'label': 'Gemiglo', 'pos': (11, 8), 'group': 'group4'},
-    {'id': 'Gemimet', 'label': 'Gemimet', 'pos': (11, 7), 'group': 'group4'},
-    {'id': 'Gemilow', 'label': 'Gemilow', 'pos': (11, 6), 'group': 'group4'},
-    {'id': 'Gemidapa', 'label': 'Gemidapa', 'pos': (11, 5), 'group': 'group4'},
+    {'id': 'DP14', 'label': 'DP14', 'pos': (1.5, 8), 'group': '온산, CMO'},
+    {'id': 'DP58', 'label': 'DP58', 'pos': (1.5, 6), 'group': '온산, CMO'},
+    {'id': 'DP26', 'label': 'DP26', 'pos': (1.5, 4), 'group': '온산, CMO'},
+    {'id': 'DP37', 'label': 'DP37', 'pos': (4, 4), 'group': '온산'},
+    {'id': 'DP18', 'label': 'DP18', 'pos': (5, 8), 'group': '온산'},
+    {'id': 'DP57', 'label': 'DP57', 'pos': (5, 6), 'group': '온산'},
+    {'id': 'DP60', 'label': 'DP60', 'pos': (6.5, 6), 'group': '온산, 익산'},
+    {'id': 'DP67', 'label': 'DP67', 'pos': (7.5, 6), 'group': '온산, 익산'},
+    {'id': 'DP72', 'label': 'DP72', 'pos': (8.5, 6), 'group': '온산, 익산'},
+    {'id': 'Gemiglo', 'label': 'Gemiglo', 'pos': (10.5, 8), 'group': '오송'},
+    {'id': 'Gemimet', 'label': 'Gemimet', 'pos': (10.5, 7), 'group': '오송'},
+    {'id': 'Gemilow', 'label': 'Gemilow', 'pos': (10.5, 6), 'group': '오송'},
+    {'id': 'Gemidapa', 'label': 'Gemidapa', 'pos': (10.5, 5), 'group': '오송'},
 ]
 
 edges = [
@@ -76,10 +80,10 @@ edges = [
 
 # 그룹별 배경색 정의
 group_colors = {
-    'group1': 'rgba(173, 216, 230, 0.2)',  # lightblue
-    'group2': 'rgba(144, 238, 144, 0.2)',  # lightgreen
-    'group3': 'rgba(240, 128, 128, 0.2)',  # lightcoral
-    'group4': 'rgba(250, 250, 210, 0.2)'   # lightgoldenrodyellow
+    '온산, CMO': 'rgba(173, 216, 230, 0.2)',  # lightblue
+    '온산': 'rgba(144, 238, 144, 0.2)',  # lightgreen
+    '온산, 익산': 'rgba(240, 128, 128, 0.2)',  # lightcoral
+    '오송': 'rgba(250, 250, 210, 0.2)'   # lightgoldenrodyellow
 }
 
 # Dash 앱 인스턴스 생성
@@ -87,6 +91,7 @@ group_colors = {
 
 app.layout = html.Div([
     html.H1('제품 품질 신호등: 우리 Gemi 푸르게 푸르게'),
+    html.Div(id='group-labels', style={'text-align': 'center', 'margin-bottom': '20px', 'display': 'flex', 'justify-content': 'space-between'}),
     dcc.Graph(id='value-chain-graph', figure={}),
     html.Button('Show/Hide Raw Data', id='toggle-button', n_clicks=0),
     html.Div(id='raw-data', style={'display': 'none', 'margin-top': '20px'}),
@@ -96,7 +101,8 @@ app.layout = html.Div([
 @app.callback(
     [Output('value-chain-graph', 'figure'),
      Output('raw-data', 'children'),
-     Output('criteria-output', 'children')],
+     Output('criteria-output', 'children'),
+     Output('group-labels', 'children')],
     [Input('toggle-button', 'n_clicks')]
 )
 def update_content(n_clicks):
@@ -208,11 +214,17 @@ def update_content(n_clicks):
     fig.update_layout(
         showlegend=False,
         margin=dict(l=40, r=40, b=40, t=40),
+        paper_bgcolor='white',  # 전체 배경색 제거
+        plot_bgcolor='white',  # 전체 배경색 제거
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
     )
 
-    return fig, raw_data_tables, criteria_message
+    group_labels = []
+    for group, color in group_colors.items():
+        group_labels.append(html.Span(group, style={'background-color': color, 'padding': '5px', 'margin': '5px', 'border-radius': '5px', 'flex': '1'}))
+
+    return fig, raw_data_tables, criteria_message, group_labels
 
 @app.callback(
     Output('raw-data', 'style'),
