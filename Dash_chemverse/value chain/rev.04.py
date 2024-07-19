@@ -120,7 +120,7 @@ edges = [
 ]
 
 # Dash 앱 인스턴스 생성
-app = dash.Dash(__name__)
+# app = dash.Dash(__name__)
 
 app.layout = html.Div([
     html.H1('제품 품질 신호등: 우리 Gemi 푸르게 푸르게'),
