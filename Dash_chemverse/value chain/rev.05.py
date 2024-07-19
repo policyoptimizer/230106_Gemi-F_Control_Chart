@@ -1,5 +1,3 @@
-
-
 import dataiku
 import dash
 from dash import dcc, html
@@ -49,7 +47,7 @@ nodes = [
     {'id': 'DP14', 'label': 'DP14', 'pos': (1, 8)},
     {'id': 'DP58', 'label': 'DP58', 'pos': (1, 6)},
     {'id': 'DP26', 'label': 'DP26', 'pos': (1, 4)},
-    {'id': 'DP37', 'label': 'DP37', 'pos': (2, 6)},
+    {'id': 'DP37', 'label': 'DP37', 'pos': (2, 4)},
     {'id': 'DP18', 'label': 'DP18', 'pos': (3, 8)},
     {'id': 'DP57', 'label': 'DP57', 'pos': (3, 6)},
     {'id': 'DP60', 'label': 'DP60', 'pos': (5, 6)},
@@ -57,18 +55,21 @@ nodes = [
     {'id': 'DP72', 'label': 'DP72', 'pos': (9, 6)},
     {'id': 'Gemiglo', 'label': 'Gemiglo', 'pos': (11, 8)},
     {'id': 'Gemimet', 'label': 'Gemimet', 'pos': (11, 7)},
-    {'id': 'Gemiro', 'label': 'Gemiro', 'pos': (11, 6)},
+    {'id': 'Gemilow', 'label': 'Gemilow', 'pos': (11, 6)},
     {'id': 'Gemidapa', 'label': 'Gemidapa', 'pos': (11, 5)},
 ]
 
 edges = [
     {'from': 'DP14', 'to': 'DP18'},
+    {'from': 'DP26', 'to': 'DP37'},
     {'from': 'DP18', 'to': 'DP60'},
-    {'from': 'DP58', 'to': 'DP37'},
     {'from': 'DP37', 'to': 'DP57'},
+    {'from': 'DP57', 'to': 'DP60'},
+    {'from': 'DP60', 'to': 'DP67'},
+    {'from': 'DP67', 'to': 'DP72'},
     {'from': 'DP72', 'to': 'Gemiglo'},
     {'from': 'DP72', 'to': 'Gemimet'},
-    {'from': 'DP72', 'to': 'Gemiro'},
+    {'from': 'DP72', 'to': 'Gemilow'},
     {'from': 'DP72', 'to': 'Gemidapa'}
 ]
 
@@ -77,7 +78,7 @@ edges = [
 
 app.layout = html.Div([
     html.H1('제품 품질 신호등: 우리 Gemi 푸르게 푸르게'),
-    dcc.Graph(id='value-chain-graph'),
+    dcc.Graph(id='value-chain-graph', figure={}),
     html.Button('Show/Hide Raw Data', id='toggle-button', n_clicks=0),
     html.Div(id='raw-data', style={'display': 'none', 'margin-top': '20px'}),
     html.Div(id='criteria-output', style={'margin-top': '20px', 'white-space': 'pre-wrap'})
@@ -193,6 +194,6 @@ def toggle_raw_data(n_clicks):
     return {'display': 'block' if n_clicks % 2 == 1 else 'none'}
 
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
+if __name__ == '__main__':
+    app.run_server(debug=True)
 
