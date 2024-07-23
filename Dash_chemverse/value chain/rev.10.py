@@ -1,3 +1,5 @@
+# gemidapa 는 여전히 어두운 회색이고, DP14, DP18, DP60 은 노드가 없음. 초록색 동그라미가 없음.
+
 import dataiku
 import dash
 from dash import dcc, html
