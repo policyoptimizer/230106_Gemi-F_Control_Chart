@@ -1,6 +1,6 @@
 # 다시 수정 시작함
 # 우선 밸류 체인 4등분 해서 색깔로 구분하는 것까지 반영했음
-
+ㅇ
 import dataiku
 import dash
 from dash import dcc, html
