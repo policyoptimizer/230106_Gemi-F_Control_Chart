@@ -1,5 +1,11 @@
 # 일단 여기까지 하는 중
-# 의도한대로는 안 나옴
+# 의도한대로 안 나옴
+# Show/Hide Raw Data 클릭하면 
+# 모든 제품에서 Assay 값 히스토그램 나와야 하고
+# DP67 은 Assay 항목이 없으니까 AUI 가 나와야 함
+# 근데 아직 안됨
+
+# 데이터 불러오는 것부터 좀 봐야 할 듯
 
 import dataiku
 import dash
@@ -363,7 +369,7 @@ def update_content(n_clicks):
     formatted_status_messages = ""
     for message in status_messages:
         formatted_status_messages += message + "\n\n"
-    
+   
     edge_x = []
     edge_y = []
 
@@ -384,8 +390,8 @@ def update_content(n_clicks):
                 html.Br(),
                 html.Span(info['site_info']),
             ], style={'background-color': group_colors[group], 'padding': '10px', 'margin': '5px', 'border-radius': '5px', 'flex': '1', 'text-align': 'center'})
-        )   
-        
+        )  
+       
     fig = go.Figure()
 
     # 그룹별 배경색 추가
@@ -442,7 +448,7 @@ def update_content(n_clicks):
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
     )
-    
+   
     return fig, raw_data_tables, criteria_message, group_labels, status_output_div
 
 @app.callback(
@@ -455,4 +461,5 @@ def toggle_raw_data(n_clicks):
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
+
 
