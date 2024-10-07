@@ -4,6 +4,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objects as go
+from dash import dash_table  # 추가된 부분
 
 # 데이터셋 로드 함수
 def load_data(dataset_name):
@@ -136,12 +137,38 @@ group_positions = {
 
 app.layout = html.Div([
     html.H1('제미F 품질 현황판[CQA(Critical Quality Analysis)]'),
-    html.Div(id='group-labels', style={'text-align': 'center', 'margin-bottom': '20px', 'display': 'flex', 'justify-content': 'space-between'}),
+    html.Div(
+        id='group-labels',
+        style={
+            'text-align': 'center',
+            'margin-bottom': '20px',
+            'display': 'flex',
+            'justify-content': 'space-between'
+        }
+    ),
     dcc.Graph(id='value-chain-graph', figure={}),
     html.Button('Show/Hide Raw Data', id='toggle-button', n_clicks=0),
     html.Div(id='raw-data', style={'display': 'none', 'margin-top': '20px'}),
-    html.Div(id='criteria-output', style={'position': 'absolute', 'bottom': '10px', 'right': '10px', 'text-align': 'left', 'font-size': '12px'}),
-    html.Div(id='status-output', style={'margin-top': '20px', 'white-space': 'pre-wrap'})
+    html.Div(
+        id='criteria-output',
+        style={
+            'position': 'absolute',
+            'bottom': '10px',
+            'right': '10px',
+            'text-align': 'left',
+            'font-size': '12px',
+            'white-space': 'pre-wrap'  # 줄바꿈 적용
+        }
+    ),
+    html.Div(
+        id='status-output',
+        style={
+            'margin-top': '20px',
+            'text-align': 'left',
+            'white-space': 'pre-wrap',  # 줄바꿈 적용
+            'padding': '10px'
+        }
+    )
 ], style={'text-align': 'center', 'position': 'relative'})
 
 @app.callback(
@@ -161,9 +188,9 @@ def update_content(n_clicks):
     ]
 
     criteria_message = (
-        "초록: 허용기준 내에 있음 / \n"
-        "노랑: 허용기준의 2% 이내에 근접함 / \n"
-        "빨강: 허용기준을 벗어남 \n"
+        "초록: 허용기준 내에 있음\n"
+        "노랑: 허용기준의 2% 이내에 근접함\n"
+        "빨강: 허용기준을 벗어남\n"
     )
 
     node_x = []
@@ -173,10 +200,12 @@ def update_content(n_clicks):
     node_shapes = []
     raw_data_tables = []
     status_messages = []
+    table_rows = []  # 추가된 부분
 
     for node in nodes:
         product_name = node['label']
-       
+        batch_no = None  # 추가된 부분
+
         if node.get('shape') == 'square':
             node_shapes.append('square')
             node_color.append('white')
@@ -186,12 +215,12 @@ def update_content(n_clicks):
             continue
         else:
             node_shapes.append('circle')
-       
+
         dataset_name = product_name if product_name in ["Zemiglo", "Zemidapa"] else f"{node['id']}_c"
         df = load_data(dataset_name)
-       
+
         status_message = f"Product: {product_name}\n"
-       
+
         if product_name == 'Zemimet':
             sub_products = [
                 "Zemimet_50_500mg", "Zemimet_50_1000mg", "Zemimet_25_500mg",
@@ -204,6 +233,7 @@ def update_content(n_clicks):
                     sub_colors.append('grey')
                 else:
                     latest_batch = sub_df.iloc[-1]
+                    batch_no = latest_batch.get('batch_no')  # 추가된 부분
                     for spec_name, (yellow_spec, red_spec) in zip(yellow_specs[sub_product].items(), red_specs[sub_product].items()):
                         if spec_name in latest_batch:
                             value = latest_batch[spec_name]
@@ -227,6 +257,7 @@ def update_content(n_clicks):
                     sub_colors.append('grey')
                 else:
                     latest_batch = sub_df.iloc[-1]
+                    batch_no = latest_batch.get('batch_no')  # 추가된 부분
                     for spec_name, (yellow_spec, red_spec) in zip(yellow_specs[sub_product].items(), red_specs[sub_product].items()):
                         if spec_name in latest_batch:
                             value = latest_batch[spec_name]
@@ -249,7 +280,8 @@ def update_content(n_clicks):
                 status_message += "No specifications found.\n"
             else:
                 latest_batch = df.iloc[-1]
-                status_message += f"Batch: {latest_batch['batch_no']}\n"
+                batch_no = latest_batch.get('batch_no')  # 추가된 부분
+                status_message += f"Batch: {batch_no}\n"
                 batch_statuses = []
 
                 for spec_name in product_spec:
@@ -293,6 +325,39 @@ def update_content(n_clicks):
         node_text.append(node['label'])
         status_messages.append(status_message)
 
+        # 테이블에 행 추가
+        table_rows.append({'Product': product_name, 'Batch': batch_no if batch_no else ''})
+
+    # 테이블 행 생성
+    num_columns = 3  # 한 행에 표시할 제품 수
+    rows = []
+
+    for i in range(0, len(table_rows), num_columns):
+        row_cells = []
+        for j in range(num_columns):
+            index = i + j
+            if index < len(table_rows):
+                product_name = table_rows[index]['Product']
+                batch_no = table_rows[index]['Batch']
+                cell_content = html.Div([
+                    html.Div(product_name, style={'font-weight': 'bold'}),
+                    html.Div(batch_no)
+                ])
+                row_cells.append(html.Td(cell_content, style={'padding': '10px', 'border': '1px solid black', 'width': f'{100/num_columns}%', 'vertical-align': 'top'}))
+            else:
+                row_cells.append(html.Td(''))
+        rows.append(html.Tr(row_cells))
+
+    status_table = html.Table(
+        children=rows,
+        style={
+            'margin': 'auto',
+            'width': '80%',
+            'border-collapse': 'collapse',
+            'table-layout': 'fixed'
+        }
+    )
+    
     edge_x = []
     edge_y = []
 
@@ -377,6 +442,17 @@ def update_content(n_clicks):
 
     return fig, raw_data_tables, criteria_message, group_labels, "\n\n".join(status_messages)
 
+    # 상태 메시지를 표로 변환
+    status_table = dash_table.DataTable(
+        data=table_rows,
+        columns=[{'name': 'Product', 'id': 'Product'}, {'name': 'Batch', 'id': 'Batch'}],
+        style_cell={'textAlign': 'center'},
+        style_header={'fontWeight': 'bold'},
+        style_table={'margin': 'auto', 'width': '50%'}
+    )
+
+    return fig, raw_data_tables, criteria_message, group_labels, status_table
+
 @app.callback(
     Output('raw-data', 'style'),
     [Input('toggle-button', 'n_clicks')]
@@ -387,4 +463,3 @@ def toggle_raw_data(n_clicks):
 # 서버 실행 (Dataiku 웹앱에서는 이 부분을 제외합니다)
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
-
