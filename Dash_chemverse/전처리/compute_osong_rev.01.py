@@ -1,5 +1,7 @@
 # data_rev04 의 복잡한 데이터 셋을 오송, 익산, 온산 3가지로 나누기
 
+# 241126 DX 세미나 발표 전 빽업
+
 # -*- coding: utf-8 -*-
 import dataiku
 import pandas as pd
