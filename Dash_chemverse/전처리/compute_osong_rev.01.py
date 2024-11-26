@@ -11,9 +11,9 @@ data_rev04_df = data_rev04.get_dataframe()
 
 # Compute recipe outputs
 # Osong, Iksan, Onsan 데이터셋으로 나누기
-osong_df = data_rev04_df[data_rev04_df['site'] == '오송']
-iksan_df = data_rev04_df[data_rev04_df['site'] == '익산']
-onsan_df = data_rev04_df[data_rev04_df['site'] == '온산']
+osong_df = data_rev04_df[data_rev04_df['site'] == 'Osong']
+iksan_df = data_rev04_df[data_rev04_df['site'] == 'Iksan']
+onsan_df = data_rev04_df[data_rev04_df['site'] == 'Onsan']
 
 # Write recipe outputs
 osong = dataiku.Dataset("osong")
@@ -22,3 +22,4 @@ iksan = dataiku.Dataset("iksan")
 iksan.write_with_schema(iksan_df)
 onsan = dataiku.Dataset("onsan")
 onsan.write_with_schema(onsan_df)
+
